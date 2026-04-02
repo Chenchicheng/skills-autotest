@@ -4,31 +4,28 @@
 
 ## 安装
 
-### Claude Code
+### NPX 一键安装（推荐）
 
-将 `.claude/commands/` 目录复制到你的项目根目录或 `~/.claude/commands/`。
+```bash
+npx skills-autotest install
+```
+
+这会将 Skills 安装到用户根目录：
+- Claude Code: `~/.claude/commands/`
+- Cursor: `~/.cursor/`
+
+### 手动安装
 
 ```bash
 # 克隆仓库
 git clone https://github.com/Chenchicheng/skills-autotest.git
 
-# 复制到全局配置
+# Claude Code
 cp -r skills-autotest/.claude/commands/* ~/.claude/commands/
+
+# Cursor
+cp -r skills-autotest/.cursor ~/
 ```
-
-### Cursor
-
-将 `.cursor/` 目录复制到你的项目根目录：
-
-```bash
-# 克隆仓库
-git clone https://github.com/Chenchicheng/skills-autotest.git
-
-# 复制到项目根目录
-cp -r skills-autotest/.cursor /path/to/your/project/
-```
-
-或者将 `.cursor/rules` 内容添加到项目根目录的 `.cursorrules` 文件中。
 
 ## 可用 Skills
 
