@@ -4,6 +4,8 @@
 
 ## 安装
 
+### Claude Code
+
 将 `.claude/commands/` 目录复制到你的项目根目录或 `~/.claude/commands/`。
 
 ```bash
@@ -13,6 +15,20 @@ git clone https://github.com/Chenchicheng/skills-autotest.git
 # 复制到全局配置
 cp -r skills-autotest/.claude/commands/* ~/.claude/commands/
 ```
+
+### Cursor
+
+将 `.cursor/` 目录复制到你的项目根目录：
+
+```bash
+# 克隆仓库
+git clone https://github.com/Chenchicheng/skills-autotest.git
+
+# 复制到项目根目录
+cp -r skills-autotest/.cursor /path/to/your/project/
+```
+
+或者将 `.cursor/rules` 内容添加到项目根目录的 `.cursorrules` 文件中。
 
 ## 可用 Skills
 
@@ -42,6 +58,7 @@ cp -r skills-autotest/.claude/commands/* ~/.claude/commands/
 - 🔌 支持 API 接口测试
 - 📊 自动生成测试报告
 - 🔧 支持参数化测试
+- 💻 支持 Claude Code 和 Cursor
 
 ## License
 

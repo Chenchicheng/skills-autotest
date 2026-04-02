@@ -1,0 +1,66 @@
+# 自动化测试规则
+
+当用户请求测试验证时，按照以下流程执行：
+
+## 1. 环境检查
+
+首先检查项目中是否存在测试配置：
+- 检查 `package.json` 中是否有测试脚本
+- 检查是否存在 `playwright.config.ts` 或 `playwright.config.js`
+- 检查是否存在 `pytest.ini` 或 `pom.xml` 中的测试配置
+
+## 2. 测试类型
+
+根据用户需求执行以下测试：
+
+### E2E 浏览器测试
+- 检查 Playwright 是否安装，未安装则提示安装 `npm init playwright@latest`
+- 运行 `npx playwright test` 执行测试
+- 调试模式: `npx playwright test --ui`
+- 有头模式: `npx playwright test --headed`
+
+### API 接口测试
+询问用户：
+- 接口 URL
+- 请求方法（GET/POST/PUT/DELETE）
+- 请求参数/Body
+- 请求头（如 Authorization）
+- 预期响应（状态码、响应字段）
+
+使用 curl 执行请求并验证结果。
+
+### 自动化测试脚本
+根据项目类型执行：
+- Node.js: `npm test` 或 `npm run test`
+- Python: `pytest`
+- Java: `mvn test` 或 `./gradlew test`
+
+## 3. 测试报告
+
+测试完成后：
+- 汇总测试结果（通过/失败数量）
+- 分析失败原因
+- 提供修复建议
+
+## 4. 参数化测试模板
+
+当用户提供多个测试用例时，批量执行：
+
+### API 测试示例
+| 用例 | 参数 | 预期结果 |
+|------|------|----------|
+| 正常登录 | username: "admin", password: "123456" | 200, token 返回 |
+| 密码错误 | username: "admin", password: "wrong" | 401, 错误提示 |
+| 参数缺失 | username: "" | 400, 参数校验失败 |
+
+### E2E 测试模板
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('功能测试', async ({ page }) => {
+  await page.goto('<URL>');
+  await page.fill('<选择器>', '<值>');
+  await page.click('<按钮选择器>');
+  await expect(page.locator('<结果选择器>')).toContainText('<预期文本>');
+});
+```
