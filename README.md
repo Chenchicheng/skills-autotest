@@ -7,17 +7,29 @@
 ### NPX 一键安装（推荐）
 
 ```bash
+# 安装 Skills 到用户目录
 npx skills-autotest install
+
+# 交互式配置 Playwright 环境
+npx skills-autotest setup
+
+# 运行 UI 模式测试
+npx skills-autotest run
+
+# 运行无头模式测试
+npx skills-autotest test
 ```
 
-这会将 Skills 安装到用户根目录：
-- Claude Code: `~/.claude/commands/`
-- Cursor: `~/.cursor/`
+`setup` 命令会自动：
+- 安装 Playwright 和浏览器
+- 创建 `.env.test` 环境配置
+- 创建 `playwright.config.ts`
+- 生成示例测试文件
+- 更新 `package.json` 测试脚本
 
 ### 手动安装
 
 ```bash
-# 克隆仓库
 git clone https://github.com/Chenchicheng/skills-autotest.git
 
 # Claude Code
