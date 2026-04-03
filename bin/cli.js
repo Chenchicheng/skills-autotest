@@ -15,6 +15,7 @@ const colors = {
   blue: '\x1b[34m',
   yellow: '\x1b[33m',
   cyan: '\x1b[36m',
+  red: '\x1b[31m',
   reset: '\x1b[0m'
 };
 
@@ -31,12 +32,62 @@ function exec(cmd) {
   }
 }
 
+function execSilent(cmd) {
+  try {
+    return execSync(cmd, { encoding: 'utf8', stdio: 'pipe' });
+  } catch (e) {
+    return null;
+  }
+}
+
 function question(rl, prompt) {
   return new Promise(resolve => rl.question(prompt, resolve));
 }
 
+// 获取 Node.js 主版本号
+function getNodeMajorVersion() {
+  const version = process.version; // e.g., 'v14.17.0'
+  const match = version.match(/^v?(\d+)/);
+  return match ? parseInt(match[1], 10) : 0;
+}
+
+// 根据Node版本选择兼容的 Playwright 版本
+function getPlaywrightVersion() {
+  const nodeMajor = getNodeMajorVersion();
+
+  if (nodeMajor >= 18) {
+    return 'latest'; // Node 18+ 使用最新版
+  } else if (nodeMajor >= 16) {
+    return '1.40.0'; // Node 16-17
+  } else if (nodeMajor >= 14) {
+    return '1.22.0'; // Node 14-15 (最后支持 Node 14 的版本)
+  } else {
+    return '1.22.0'; // 更低版本也用 1.22.0
+  }
+}
+
+function checkNodeVersion() {
+  const nodeMajor = getNodeMajorVersion();
+  log(`\n📋 Node.js 版本: ${process.version}`, 'cyan');
+
+  if (nodeMajor < 14) {
+    log('❌ Node.js 版本过低，需要 Node 14+，请升级 Node.js', 'red');
+    process.exit(1);
+  }
+
+  if (nodeMajor < 16) {
+    log('⚠️  Node.js 版本较低，将安装 Playwright 1.22.0（兼容版本）', 'yellow');
+    log('   建议升级到 Node 18+ 以获得更好体验', 'yellow');
+  } else {
+    log('✅ Node.js 版本符合要求', 'green');
+  }
+}
+
 async function interactiveSetup() {
   log('\n🚀 自动化测试环境配置向导\n', 'cyan');
+
+  // 检查 Node 版本
+  checkNodeVersion();
 
   const rl = readline.createInterface({
     input: process.stdin,
@@ -52,9 +103,15 @@ async function interactiveSetup() {
   rl.close();
 
   const cwd = process.cwd();
+  const playwrightVersion = getPlaywrightVersion();
 
-  log('\n📦 安装依赖...', 'blue');
-  exec('npm install -D @playwright/test dotenv');
+  log(`\n📦 安装 Playwright ${playwrightVersion === 'latest' ? '最新版' : playwrightVersion}...`, 'blue');
+
+  if (playwrightVersion === 'latest') {
+    exec('npm install -D @playwright/test dotenv');
+  } else {
+    exec(`npm install -D @playwright/test@${playwrightVersion} dotenv`);
+  }
 
   log('\n🌐 安装浏览器...', 'blue');
   exec('npx playwright install chromium');
@@ -185,6 +242,10 @@ function help() {
   log('  npx skills-autotest run         运行 UI 模式测试');
   log('  npx skills-autotest test        运行无头模式测试');
   log('  npx skills-autotest help        显示帮助信息\n');
+  log('Node 版本兼容:');
+  log('  Node 18+  → Playwright 最新版');
+  log('  Node 16-17 → Playwright 1.40.0');
+  log('  Node 14-15 → Playwright 1.22.0\n');
 }
 
 // 主逻辑
